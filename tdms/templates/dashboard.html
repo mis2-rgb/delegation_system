@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Dashboard</h3>
+<div class="row" id="metrics">
+  <div class="col-md-3"><div class="card"><div class="card-body"><h6>Total</h6><div id="m_total">0</div></div></div></div>
+  <div class="col-md-3"><div class="card"><div class="card-body"><h6>Completed</h6><div id="m_completed">0</div></div></div></div>
+  <div class="col-md-3"><div class="card"><div class="card-body"><h6>% WND</h6><div id="m_wnd">0%</div></div></div></div>
+  <div class="col-md-3"><div class="card"><div class="card-body"><h6>% WNDOT</h6><div id="m_wndot">0%</div></div></div></div>
+</div>
+<script>
+fetch('/api/reports/metrics/', {headers: {'Accept':'application/json'}}).then(r=>r.json()).then(d=>{
+  document.getElementById('m_total').innerText = d.total_tasks;
+  document.getElementById('m_completed').innerText = d.completed_tasks;
+  document.getElementById('m_wnd').innerText = d.wnd_percent + '%';
+  document.getElementById('m_wndot').innerText = d.wndot_percent + '%';
+});
+</script>
+{% endblock %}
