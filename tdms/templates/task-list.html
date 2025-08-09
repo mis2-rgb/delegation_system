@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Tasks</h3>
+<div id="list"></div>
+<script>
+fetch('/api/tasks/', {headers: {'Accept':'application/json','Authorization': localStorage.getItem('jwt')?`Bearer ${localStorage.getItem('jwt')}`:''}}).then(r=>r.json()).then(d=>{
+  const el = document.getElementById('list');
+  (d.results || d).forEach(t=>{
+    const div = document.createElement('div');
+    div.className='card p-2';
+    div.innerHTML = `<strong>${t.delegation_id}</strong> - ${t.description} <span class='badge bg-secondary'>${t.priority}</span>`;
+    el.appendChild(div);
+  });
+});
+</script>
+{% endblock %}

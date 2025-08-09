@@ -1,0 +1,16 @@
+Django>=4.2,<5
+psycopg2-binary
+redis
+celery
+channels
+channels-redis
+djangorestframework
+drf-spectacular
+djangorestframework-simplejwt
+django-filter
+django-environ
+whitenoise
+gunicorn
+pandas
+openpyxl
+reportlab

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Weekly Reports</h3>
+<table class="table" id="tbl"><thead><tr><th>Week</th><th>Total</th><th>Completed</th><th>%WND</th><th>%WNDOT</th><th>%Quality</th></tr></thead><tbody></tbody></table>
+<script>
+fetch('/api/reports/weekly/', {headers: {'Accept':'application/json','Authorization': localStorage.getItem('jwt')?`Bearer ${localStorage.getItem('jwt')}`:''}}).then(r=>r.json()).then(d=>{
+  const tb = document.querySelector('#tbl tbody');
+  (d.results || d).forEach(r=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.week_start} - ${r.week_end}</td><td>${r.total_tasks}</td><td>${r.completed_tasks}</td><td>${r.wnd_percent}%</td><td>${r.wndot_percent}%</td><td>${r.quality_issue_percent}%</td>`;
+    tb.appendChild(tr);
+  });
+});
+</script>
+{% endblock %}

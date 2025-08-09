@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Create Task</h3>
+<form id="taskForm" class="card p-3">
+  <div class="mb-3">
+    <label class="form-label">Department ID</label>
+    <input class="form-control" name="department" required placeholder="Department ID">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Doer ID</label>
+    <input class="form-control" name="doer" required placeholder="User ID">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Description</label>
+    <textarea class="form-control" name="description" required></textarea>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Complete By (ISO datetime)</label>
+    <input class="form-control" name="complete_by" required placeholder="2025-01-01T17:00:00Z">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Priority</label>
+    <select class="form-select" name="priority">
+      <option value="low">Low</option>
+      <option value="medium" selected>Medium</option>
+      <option value="high">High</option>
+      <option value="critical">Critical</option>
+    </select>
+  </div>
+  <button class="btn btn-primary" type="submit">Create</button>
+</form>
+<script>
+const form = document.getElementById('taskForm');
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const fd = new FormData(form);
+  const data = Object.fromEntries(fd.entries());
+  const resp = await fetch('/api/tasks/', {method:'POST', headers:{'Content-Type':'application/json', 'Accept':'application/json', 'Authorization': localStorage.getItem('jwt')?`Bearer ${localStorage.getItem('jwt')}`:''}, body: JSON.stringify(data)});
+  const json = await resp.json();
+  if(resp.ok){ alert('Created '+json.delegation_id); } else { alert('Error: '+JSON.stringify(json)); }
+});
+</script>
+{% endblock %}
