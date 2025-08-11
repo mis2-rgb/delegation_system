@@ -1,6 +1,6 @@
 from celery import shared_task
 from django.utils import timezone
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F
 from datetime import timedelta
 
 from accounts.models import Organization
@@ -29,7 +29,7 @@ def compute_weekly_reports():
         completions = TaskCompletion.objects.filter(task__in=tasks)
         completed = completions.count()
         quality_issues = completions.filter(quality_issue=True).count()
-        on_time = completions.filter(task__complete_by__gte=models.F('completed_at')).count() if completed else 0
+        on_time = completions.filter(task__complete_by__gte=F('completed_at')).count() if completed else 0
         report, _ = WeeklyReport.objects.get_or_create(
             organization=org,
             department=None,
