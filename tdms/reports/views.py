@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.response import Response
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F
 from django.utils import timezone
 from datetime import timedelta
 
@@ -20,7 +20,7 @@ class DashboardMetricsView(generics.GenericAPIView):
         total = qs.count()
         completed = TaskCompletion.objects.filter(task__organization=org).count()
         quality_issues = TaskCompletion.objects.filter(task__organization=org, quality_issue=True).count()
-        on_time = TaskCompletion.objects.filter(task__organization=org, task__complete_by__gte=models.F('completed_at')).count() if completed else 0
+        on_time = TaskCompletion.objects.filter(task__organization=org, task__complete_by__gte=F('completed_at')).count() if completed else 0
         data = {
             'total_tasks': total,
             'completed_tasks': completed,

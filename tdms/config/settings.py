@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
     'channels',
+    'corsheaders',
 
     # Local apps
     'organizations',
@@ -59,6 +60,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -152,6 +154,12 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+# Allow all origins if DEBUG, else use env-provided list
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
+
 # Channels (WebSockets)
 REDIS_URL = env('REDIS_URL')
 CHANNEL_LAYERS = {
@@ -164,6 +172,7 @@ CHANNEL_LAYERS = {
 }
 
 # Celery
+from celery.schedules import crontab
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ['json']
@@ -174,11 +183,11 @@ CELERY_BEAT_SCHEDULE = {
     # Weekly Saturday 17:00 for regeneration and MIS
     'weekly_regeneration': {
         'task': 'tasks.tasks.regenerate_incomplete_tasks',
-        'schedule': { 'type': 'crontab', 'minute': 0, 'hour': 17, 'day_of_week': 'sat' },
+        'schedule': crontab(minute=0, hour=17, day_of_week='sat'),
     },
     'weekly_reports': {
         'task': 'reports.tasks.compute_weekly_reports',
-        'schedule': { 'type': 'crontab', 'minute': 10, 'hour': 17, 'day_of_week': 'sat' },
+        'schedule': crontab(minute=10, hour=17, day_of_week='sat'),
     },
 }
 

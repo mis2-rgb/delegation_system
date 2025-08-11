@@ -14,3 +14,6 @@ gunicorn
 pandas
 openpyxl
 reportlab
+Pillow
+daphne
+django-cors-headers
